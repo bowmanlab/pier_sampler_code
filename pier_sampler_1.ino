@@ -1,3 +1,5 @@
+//Author: Arindam Chatterji, 2017
+
 int sol_A = 4;  //bjt base pin
 int sol_B = 8;
 int sol_D = 9;
