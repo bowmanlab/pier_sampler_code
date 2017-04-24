@@ -1,11 +1,21 @@
+//assign pins for solenoids A,B,C,D
 int sol_B = 2; 
 int sol_C = 4;  
 int sol_D = 3; 
 int sol_A = 12; 
+//initialize timer
 unsigned long time_since_last_reset =0;
+
+//set normal normal op length in ms
 int interval_one = 5000;
+
+//set sampling length in ms
 int interval_two = 8000;
+
+//set fixative length in ms
 int interval_three = 4000;
+
+//debugging logic(irrelevant for operation)
 boolean check_normal =true;
 boolean check_sampling = true;
 boolean check_fix = true;
@@ -14,48 +24,59 @@ boolean check_fix = true;
 void setup() {
 Serial.begin(1200);
 delay(2000);
+
+//set solenoids as outputs to system
 pinMode(sol_A, OUTPUT);
 pinMode(sol_B, OUTPUT);
 pinMode(sol_D, OUTPUT);
 pinMode(sol_C, OUTPUT);
+
+//loop through and initialize solenoid pns
 for(int solX_Pin = 5; solX_Pin < 12; solX_Pin++)
 {
   pinMode(solX_Pin, OUTPUT);
 }
 }
 
+
+//operation loop
 void loop() {
 
+//loop to next solenoid at the end of each cycle  
 for(int solX_Pin = 5; solX_Pin < 12 ; solX_Pin++){
 
 Serial.println(solX_Pin);
 
+//set up timing
+//get last reset time from millis function
 time_since_last_reset = millis();
+
 //normal operation
+//while time elapsed is less than interval set, begin normal operation
 while((millis()-time_since_last_reset)<interval_one){
  digitalWrite(sol_C, LOW);
  digitalWrite(sol_A, HIGH);
  digitalWrite(sol_B, HIGH);
-digitalWrite(sol_D, HIGH);
- //digitalWrite(solX_Pin, HIGH);
- Serial.println("normal");
+ digitalWrite(sol_D, HIGH);
+ Serial.println("normal");  //print normal to serial monitor
 }
+//exit loop after set time has elapsed
 
-
-//sampling through X for about 2 mins
-//Sampling
+//check time again
 time_since_last_reset = millis();
+
+//while time elapsed is less than sampling interval, enter sampling mode
 while((millis()-time_since_last_reset)<interval_two){
  digitalWrite(solX_Pin, HIGH);
  digitalWrite(sol_B, LOW);
  digitalWrite(sol_D, LOW);
- Serial.println("sampling");
+ Serial.println("sampling");   //print sampling to serial monitor
 
 }
 
 
-
 time_since_last_reset = millis();
+//enter fixative operation
 while((millis()-time_since_last_reset)<interval_three){
  digitalWrite(sol_A, LOW);
   digitalWrite(sol_C, HIGH);
